@@ -1,0 +1,50 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import java.util.List;
+
+public class BrokenImages {
+    public static void main(String[] args) {
+        System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver");
+        WebDriver driver = new ChromeDriver();
+        driver.get("https://www.example.com");
+
+        List<WebElement> images = driver.findElements(By.tagName("img"));
+        for (WebElement image : images) {
+            String src = image.getAttribute("src");
+            try {
+                int responseCode = Utils.getResponseCode(src);
+                if (responseCode != 200) {
+                    System.out.println("Broken image URL: " + src);
+                }
+            } catch (Exception e) {
+                System.out.println("Error checking image URL: " + src);
+            }
+        }
+
+        driver.quit();
+    }
+}
+
+class Utils {
+    public static int getResponseCode(String urlString) throws Exception {
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        return connection.getResponseCode();
+    }
+}
+
+
+
+This code uses the "findElements" method to retrieve all "<img>" elements on the page,
+ then uses the "getAttribute" method to retrieve the src attribute for each image. 
+Finally, it uses the "Utils.getResponseCode" method to check the response status code of each image URL.
+If the status code is not 200, the code prints a message indicating that the image URL is broken.
+The "Utils.getResponseCode" method uses the HttpURLConnection class to make a "GET" request to the image URL and retrieve the response status code.
+
+
+
+
